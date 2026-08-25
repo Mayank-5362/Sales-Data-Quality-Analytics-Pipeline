@@ -1,0 +1,41 @@
+customer_id,customer_name,region,product_id,product_name,category,sale_date,quantity,sales_amount
+1,ABC Company,North,101,Laptop,Electronics,2024-03-01,1,1200.00
+2,Global Traders,south,102,Wireless Mouse,electronics,2024-03-01,5,125.00
+3,Bright Retailers,EAST,103,Office Chair,Furniture,2024-03-02,1,180.00
+4,Sunrise Mart,West,104,Standing Desk,FURNITURE,2024-03-02,1,350.00
+5,Metro Supplies,North,105,Notebook Pack,Stationery,2024-03-03,10,50.00
+1,ABC Company,North,101,Laptop,Electronics,2024-03-01,1,1200.00
+6,Pioneer Foods,South,106,Ballpoint Pens,stationery,2024-03-03,20,40.00
+7,Union Distributors,east,107,Monitor 24in,Electronics,2024-03-04,3,600.00
+8,Nova Electronics,west,108,Bookshelf,Furniture,2024-03-04,1,220.00
+9,Prime Wholesale,North,101,Laptop,Electronics,2024-03-05,1,1200.00
+10,Silverline Corp,South,102,Wireless Mouse,Electronics,2024-03-05,4,100.00
+2,Global Traders,south,103,Office Chair,Furniture,2024-03-06,,90.00
+3,Bright Retailers,EAST,104,Standing Desk,Furniture,2024-03-06,2,-150.00
+4,Sunrise Mart,West,105,Notebook Pack,Stationery,2024-03-07,5,25.00
+5,Metro Supplies,North,106,Ballpoint Pens,Stationery,2024-03-07,15,30.00
+6,Pioneer Foods,South,107,Monitor 24in,Electronics,2024-03-08,2,400.00
+7,Union Distributors,east,108,Bookshelf,Furniture,,1,220.00
+8,Nova Electronics,west,101,Laptop,Electronics,2024-03-10,1,1200.00
+,Metro Supplies,North,102,Wireless Mouse,Electronics,2024-03-10,3,75.00
+10,Silverline Corp,South,103,Office Chair,Furniture,2024-03-11,1,180.00
+1,ABC Company,North,999,Unknown Product,Electronics,2024-03-12,1,99.00
+2,Global Traders,south,104,Standing Desk,Furniture,2024-03-13,2,700.00
+3,Bright Retailers,EAST,105,Notebook Pack,Stationery,2024-03-14,8,40.00
+4,Sunrise Mart,West,106,Ballpoint Pens,Stationery,2024-03-15,12,24.00
+5,Metro Supplies,North,107,Monitor 24in,Electronics,2024-03-16,1,200.00
+6,Pioneer Foods,South,108,Bookshelf,Furniture,2024-03-17,2,440.00
+7,Union Distributors,east,101,Laptop,Electronics,2024-03-18,1,1200.00
+8,Nova Electronics,west,102,Wireless Mouse,Electronics,2024-03-19,five,125.00
+9,Prime Wholesale,North,103,Office Chair,Furniture,2024-03-20,1,180.00
+10,Silverline Corp,South,104,Standing Desk,Furniture,2024-03-21,1,350.00
+1,ABC Company,North,105,Notebook Pack,Stationery,2024-03-22,6,30.00
+2,Global Traders,south,106,Ballpoint Pens,Stationery,not-a-date,10,20.00
+3,Bright Retailers,EAST,107,Monitor 24in,Electronics,2024-03-24,2,400.00
+4,Sunrise Mart,West,108,Bookshelf,Furniture,2024-03-25,1,220.00
+5,Metro Supplies,North,101,Laptop,Electronics,2024-03-26,1,1200.00
+6,Pioneer Foods,South,102,Wireless Mouse,Electronics,2024-03-27,,150.00
+7,Union Distributors,east,103,Office Chair,Furniture,2024-03-28,1,180.00
+8,Nova Electronics,west,104,Standing Desk,Furniture,2024-03-28,1,180.00
+999,Unknown Customer,North,105,Notebook Pack,Stationery,2024-03-29,3,60.00
+10,Silverline Corp,South,106,Ballpoint Pens,Stationery,2024-03-30,25,50.00

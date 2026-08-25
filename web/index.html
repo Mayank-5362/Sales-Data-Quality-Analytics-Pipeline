@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Data Quality & Analytics Pipeline</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Top Navigation Header -->
+        <header class="top-header">
+            <div class="header-left">
+                <div class="logo-text">
+                    <h1>Sales Data Quality & Analytics Pipeline</h1>
+                    <span class="subtitle">Automated ETL, Validation, Database Loading & Reports</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <div id="dbStatusBadge" class="status-badge status-loading">
+                    <span class="dot"></span>
+                    <span id="dbStatusText">Checking DB...</span>
+                </div>
+                <button id="btnInitDb" class="btn btn-outline" title="Initialize schema.sql tables">
+                    <span>Init Schema</span>
+                </button>
+                <button id="btnRunAll" class="btn btn-primary">
+                    <span>Run Pipeline</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- KPI Metrics Ribbon -->
+        <section class="kpi-grid">
+            <div class="kpi-card">
+                <span class="kpi-label">Total Revenue</span>
+                <h2 id="kpiRevenue" class="kpi-value">$0.00</h2>
+                <span class="kpi-meta" id="kpiAvgOrder">Avg Order: $0.00</span>
+            </div>
+
+            <div class="kpi-card">
+                <span class="kpi-label">Total Orders</span>
+                <h2 id="kpiOrders" class="kpi-value">0</h2>
+                <span class="kpi-meta" id="kpiUnits">0 units sold</span>
+            </div>
+
+            <div class="kpi-card">
+                <span class="kpi-label">Top Region</span>
+                <h2 id="kpiTopRegion" class="kpi-value">--</h2>
+                <span class="kpi-meta" id="kpiTopRegionRev">$0.00 revenue</span>
+            </div>
+
+            <div class="kpi-card">
+                <span class="kpi-label">Top Product</span>
+                <h2 id="kpiTopProduct" class="kpi-value">--</h2>
+                <span class="kpi-meta" id="kpiTopCust">Top Client: --</span>
+            </div>
+        </section>
+
+        <!-- Navigation Tabs -->
+        <nav class="nav-tabs">
+            <button class="tab-btn active" data-tab="tab-guide">📖 How It Works & Guide</button>
+            <button class="tab-btn" data-tab="tab-pipeline">🚀 Pipeline & Upload</button>
+            <button class="tab-btn" data-tab="tab-dashboard">📊 Analytics Dashboard</button>
+            <button class="tab-btn" data-tab="tab-audit">🛡 Data Quality & Quarantine</button>
+            <button class="tab-btn" data-tab="tab-sql">⚡ SQL Studio</button>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="content-container">
+
+            <!-- TAB 1: How It Works & User Guide -->
+            <div id="tab-guide" class="tab-pane active">
+                <div class="guide-section">
+                    <div class="guide-step-card">
+                        <h4>🎯 What This Project Does</h4>
+                        <p>This is an automated <strong>Extract, Transform, Load (ETL)</strong> data quality pipeline. It takes your raw monthly or master CSV files, automatically inspects them for errors, standardizes strings and dates, drops duplicates, fixes missing non-critical attributes, isolates unrecoverable bad data into a quarantine folder, loads clean records into a relational database, and computes executive analytics reports and trend charts.</p>
+                    </div>
+
+                    <div class="guide-step-card">
+                        <h4>📝 Step-by-Step Instructions: How to Use</h4>
+                        <ol style="margin-left: 20px; line-height: 1.8;">
+                            <li><strong>Upload your CSV files</strong>: Go to the <em>"🚀 Pipeline & Upload"</em> tab, select your CSV files (e.g. <code>Customers.csv</code>, <code>Products.csv</code>, <code>Sales.csv</code>), and click <strong>"Upload Files to data/raw/"</strong>.</li>
+                            <li><strong>Run the Pipeline</strong>: Click the blue <strong>"Run Pipeline"</strong> button in the top header or in the upload tab.</li>
+                            <li><strong>Review Data Quality</strong>: Check the <em>"🛡 Data Quality & Quarantine"</em> tab to see what was cleaned vs what bad rows were quarantined.</li>
+                            <li><strong>View Visual Reports</strong>: Switch to the <em>"📊 Analytics Dashboard"</em> tab to view charts, revenue trends, and regional breakdown.</li>
+                            <li><strong>Execute SQL Analytics</strong>: Go to <em>"⚡ SQL Studio"</em> to run advanced queries with CTEs and Window Functions (e.g., product ranking with <code>RANK()</code>, month-over-month growth with <code>LAG()</code>, and running spend with <code>SUM() OVER</code>).</li>
+                        </ol>
+                    </div>
+
+                    <div class="guide-step-card">
+                        <h4>📋 Supported CSV File Formats</h4>
+                        <p>You can upload separate dimension and fact files, or a single combined sales file:</p>
+                        <table class="guide-table">
+                            <thead>
+                                <tr>
+                                    <th>File Type</th>
+                                    <th>Example Filename</th>
+                                    <th>Required Columns</th>
+                                    <th>What The Pipeline Does</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Customers</strong></td>
+                                    <td><code>Customers.csv</code></td>
+                                    <td><code>customer_id, customer_name, region</code></td>
+                                    <td>Cleans names, standardizes regions, and upserts into master <code>customers</code> table.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Products</strong></td>
+                                    <td><code>Products.csv</code></td>
+                                    <td><code>product_id, product_name, category</code></td>
+                                    <td>Standardizes product catalog and categories, upserts into <code>products</code> table.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Sales (Fact)</strong></td>
+                                    <td><code>Sales.csv</code> or monthly CSVs</td>
+                                    <td><code>customer_id, product_id, sale_date, quantity, sales_amount</code></td>
+                                    <td>Validates FKs, cleans numbers & dates, checks bounds, and inserts into <code>sales</code> table.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Combined Sales</strong></td>
+                                    <td><code>monthly_sales.csv</code></td>
+                                    <td>All columns above combined</td>
+                                    <td>Automatically separates dimension records from sales facts and populates all tables.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="guide-step-card">
+                        <h4>🛡 The 6 Data Quality Rules Applied</h4>
+                        <ul style="margin-left: 20px; line-height: 1.8;">
+                            <li><strong>1. Missing Values</strong>: Rejects records missing critical IDs/dates; auto-imputes non-critical blanks (e.g. unknown region).</li>
+                            <li><strong>2. Duplicate Detection</strong>: Identifies and removes duplicate transactions while logging count.</li>
+                            <li><strong>3. Range Validation</strong>: Rejects negative amounts (<code>sales_amount &le; 0</code>) and zero/negative quantities (<code>quantity &le; 0</code>).</li>
+                            <li><strong>4. Date Validation</strong>: Converts valid dates to standard format; flags corrupt dates or future-dated records.</li>
+                            <li><strong>5. Foreign Key Integrity</strong>: Verifies customer and product references exist before inserting sales facts.</li>
+                            <li><strong>6. Type Coercion</strong>: Cleans currency formatting (e.g., <code>"$1,200.50"</code> ➔ <code>1200.50</code>).</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: Pipeline Execution & Upload -->
+            <div id="tab-pipeline" class="tab-pane">
+                <div class="pipeline-grid">
+                    <!-- Controls Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Upload & Run Pipeline</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="csvFileInput">1. Upload CSV Files (Multi-file select enabled):</label>
+                                <div class="input-action-group">
+                                    <input type="file" id="csvFileInput" class="form-control" accept=".csv" multiple style="padding: 6px 10px;">
+                                    <button id="btnUploadCsv" class="btn btn-outline">Upload Files</button>
+                                </div>
+                                <small class="text-muted" style="display:block; margin-top: 4px;">Hold Ctrl to select multiple files at once (e.g. <code>Customers.csv</code>, <code>Products.csv</code>, <code>Sales.csv</code>).</small>
+                            </div>
+
+                            <div class="form-group" style="margin-top: 20px;">
+                                <label for="rawFileSelect">2. Select Target File to Process:</label>
+                                <div class="input-action-group">
+                                    <select id="rawFileSelect" class="form-control">
+                                        <option value="">-- All Files in data/raw/ --</option>
+                                    </select>
+                                    <button id="btnRunSelected" class="btn btn-primary">Run ETL</button>
+                                </div>
+                            </div>
+
+                            <!-- Stepper stages -->
+                            <div class="pipeline-stepper">
+                                <div class="step-item" id="step-extract">
+                                    <div class="step-circle">1</div>
+                                    <div class="step-label">Extract</div>
+                                </div>
+                                <div class="step-arrow">&rarr;</div>
+                                <div class="step-item" id="step-validate">
+                                    <div class="step-circle">2</div>
+                                    <div class="step-label">Validate</div>
+                                </div>
+                                <div class="step-arrow">&rarr;</div>
+                                <div class="step-item" id="step-transform">
+                                    <div class="step-circle">3</div>
+                                    <div class="step-label">Clean</div>
+                                </div>
+                                <div class="step-arrow">&rarr;</div>
+                                <div class="step-item" id="step-load">
+                                    <div class="step-circle">4</div>
+                                    <div class="step-label">Load</div>
+                                </div>
+                                <div class="step-arrow">&rarr;</div>
+                                <div class="step-item" id="step-report">
+                                    <div class="step-circle">5</div>
+                                    <div class="step-label">Report</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Live Terminal Output Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Execution Log</h3>
+                            <button id="btnClearConsole" class="btn btn-sm btn-outline">Clear</button>
+                        </div>
+                        <div class="card-body">
+                            <div class="console-body" id="consoleOutput">
+                                <span class="console-line">[READY] Pipeline ready. Upload CSV files and click "Run Pipeline".</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: Analytics Dashboard -->
+            <div id="tab-dashboard" class="tab-pane">
+                <div class="dashboard-grid">
+                    <!-- Chart Panel -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Visual Analytics Dashboard</h3>
+                            <button id="btnRefreshChart" class="btn btn-sm btn-outline">Refresh</button>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-wrapper" id="chartContainer">
+                                <div id="chartEmptyState" style="text-align: center; padding: 40px 20px; color: var(--text-muted);">
+                                    <div style="font-size: 32px; margin-bottom: 8px;">📊</div>
+                                    <h4 style="color: var(--text-main); margin-bottom: 6px; font-size: 15px;">No Analytics Generated Yet</h4>
+                                    <p style="font-size: 13px; max-width: 420px; margin: 0 auto 16px auto; color: var(--text-muted);">
+                                        This visual analytics dashboard will appear automatically after you upload your CSV files and run the ETL pipeline.
+                                    </p>
+                                    <button class="btn btn-primary btn-sm" onclick="document.querySelector('[data-tab=tab-pipeline]').click();">
+                                        Go to Pipeline & Upload
+                                    </button>
+                                </div>
+                                <img id="analyticsChartImg" src="" alt="Sales Analytics Chart" style="display: none; max-width: 100%; height: auto; border: 1px solid var(--border); border-radius: 4px;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Regional Table -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Regional Breakdown</h3>
+                        </div>
+                        <div class="card-body table-responsive">
+                            <table class="data-table" id="regionalTable">
+                                <thead>
+                                    <tr>
+                                        <th>Region</th>
+                                        <th>Orders</th>
+                                        <th>Revenue</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td colspan="3" class="text-center text-muted">No data loaded yet. Run pipeline to view.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: Data Quality Audit & Quarantine -->
+            <div id="tab-audit" class="tab-pane">
+                <div style="display:flex; flex-direction:column; gap:20px;">
+                    <!-- Audit History Table -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Data Quality Audit Log (<code>data_quality_log</code> table)</h3>
+                            <button id="btnRefreshAudit" class="btn btn-sm btn-outline">Refresh</button>
+                        </div>
+                        <div class="card-body table-responsive">
+                            <table class="data-table" id="auditTable">
+                                <thead>
+                                    <tr>
+                                        <th>Run ID</th>
+                                        <th>Time</th>
+                                        <th>File</th>
+                                        <th>Read</th>
+                                        <th>Duplicates Removed</th>
+                                        <th>Missing Fixed</th>
+                                        <th>Invalid Quarantined</th>
+                                        <th>Loaded</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td colspan="9" class="text-center text-muted">No audit logs recorded yet.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Quarantine Inspector -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Quarantined Invalid Records Inspector</h3>
+                            <span class="badge badge-warning" id="quarantineBadge">0 Fatal Rows Isolated</span>
+                        </div>
+                        <div class="card-body table-responsive">
+                            <table class="data-table" id="quarantineTable">
+                                <thead>
+                                    <tr>
+                                        <th>Source File</th>
+                                        <th>Customer</th>
+                                        <th>Product</th>
+                                        <th>Date</th>
+                                        <th>Quantity</th>
+                                        <th>Amount</th>
+                                        <th>Rejection Reason</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td colspan="7" class="text-center text-muted">No quarantined rows.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 5: SQL Analytics Studio -->
+            <div id="tab-sql" class="tab-pane">
+                <div style="display:flex; flex-direction:column; gap:20px;">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>SQL Query Studio</h3>
+                            <div style="display:flex; gap:10px; align-items:center;">
+                                <select id="sqlPresetSelect" class="form-control" style="width: auto;">
+                                    <option value="1">1. Top 10 Customers by Revenue</option>
+                                    <option value="2">2. Monthly Sales Trend</option>
+                                    <option value="3">3. Sales by Region & Share %</option>
+                                    <option value="4" selected>4. Top Products by Category (RANK() Window Function)</option>
+                                    <option value="5">5. Month-over-Month Growth (CTE + LAG())</option>
+                                    <option value="6">6. Customer Cumulative Running Total (SUM() OVER)</option>
+                                </select>
+                                <button id="btnExecuteSql" class="btn btn-primary btn-sm">Execute Query</button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <textarea id="sqlEditor" class="sql-textarea" rows="6" spellcheck="false"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Query Result Table -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Query Results</h3>
+                            <span class="badge badge-info" id="queryMetaBadge">0 Rows</span>
+                        </div>
+                        <div class="card-body table-responsive">
+                            <table class="data-table" id="queryResultTable">
+                                <thead></thead>
+                                <tbody>
+                                    <tr><td class="text-center text-muted">Execute a query above to see results.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <span>Automated Sales Data Quality & Analytics Pipeline</span>
+            <span>Local Instance: <code>http://localhost:5000</code></span>
+        </footer>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

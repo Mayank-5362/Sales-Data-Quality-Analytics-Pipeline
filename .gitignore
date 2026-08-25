@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Environment Variables
+.env
+
+# Database and data artifacts
+*.db
+*.sqlite3
+data/processed/*.csv
+data/quarantine/*.csv
+!data/raw/sample_dirty_sales.csv
+!data/raw/sales_2024_01.csv
+
+# Reports and charts
+reports/*.png
+reports/*.txt
+reports/*.html
+!reports/.gitkeep
+
+# IDE
+.vscode/
+.idea/
+*.swp
