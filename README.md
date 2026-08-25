@@ -4,7 +4,7 @@ An automated ETL pipeline and interactive web application for validating messy s
 
 ---
 
-## ⚙️ How It Works
+##  How It Works
 
 The pipeline automates the complete data lifecycle across 5 stages:
 
@@ -23,7 +23,7 @@ The pipeline automates the complete data lifecycle across 5 stages:
 
 ---
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 ├── data/
@@ -51,7 +51,7 @@ The pipeline automates the complete data lifecycle across 5 stages:
 
 ---
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### 1. Install Dependencies
 ```bash
@@ -66,7 +66,7 @@ Open **http://localhost:5000** in your browser to upload CSVs, run the pipeline,
 
 ---
 
-## 💻 CLI Commands
+##  CLI Commands
 
 ```bash
 # Ingest all CSV files in data/raw/ and generate executive report
@@ -81,9 +81,3 @@ python main.py --analytics-queries
 # Run complete test suite
 pytest -v
 ```
-
----
-
-## 📖 Deep-Dive Documentation
-For full architectural details, database star schema, idempotency mechanics, and interview Q&As:
-👉 **[ARCHITECTURE_AND_INTERVIEW_GUIDE.md](ARCHITECTURE_AND_INTERVIEW_GUIDE.md)**
